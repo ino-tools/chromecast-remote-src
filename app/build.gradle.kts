@@ -10,8 +10,8 @@ android {
         applicationId = "com.ino.remotehome"
         minSdk = 26
         targetSdk = 34
-        versionCode = 2026111307
-        versionName = "2026.11.13.7"
+        versionCode = 2026111308
+        versionName = "2026.11.13.8"
     }
 
     signingConfigs {

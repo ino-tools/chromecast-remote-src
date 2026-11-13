@@ -26,6 +26,36 @@ final class Prefs {
         sp(c).edit().putBoolean("cursor_on", v).apply();
     }
 
+    /** お気に入りのアプリ（パッケージ名をカンマでつなげて保存）。 */
+    static List<String> favorites(Context c) {
+        List<String> out = new ArrayList<String>();
+        String s = sp(c).getString("favs", "");
+        for (String p : s.split(",")) {
+            if (p.length() > 0) out.add(p);
+        }
+        return out;
+    }
+
+    /** お気に入りに入れる／外す。入れたら true。 */
+    static boolean toggleFavorite(Context c, String pkg) {
+        List<String> l = favorites(c);
+        boolean added;
+        if (l.contains(pkg)) {
+            l.remove(pkg);
+            added = false;
+        } else {
+            l.add(pkg);
+            added = true;
+        }
+        StringBuilder b = new StringBuilder();
+        for (String p : l) {
+            if (b.length() > 0) b.append(',');
+            b.append(p);
+        }
+        sp(c).edit().putString("favs", b.toString()).apply();
+        return added;
+    }
+
     static String funcName(String f) {
         if (f.equals("up")) return L.t("上", "Up");
         if (f.equals("down")) return L.t("下", "Down");
