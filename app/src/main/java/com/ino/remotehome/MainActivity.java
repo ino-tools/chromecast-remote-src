@@ -226,8 +226,8 @@ public class MainActivity extends Activity {
     private void addHelp(boolean enabled) {
         TextView t = new TextView(this);
         t.setText(enabled
-                ? L.t("他のアプリを開くと、リモコンの上下左右でカーソルが動きます。決定＝タップ、決定を長押し＝スクロールモードと切り替え。",
-                        "In other apps, the arrow keys move a cursor. OK = tap, long-press OK = switch to scroll mode.")
+                ? L.t("他のアプリを開くと、リモコンの上下左右でボタンからボタンへ選択が移り、決定で押せます。決定を長押しで「カーソル」「スクロール」に切り替えられます。",
+                        "In other apps, the arrow keys move the selection between buttons and OK presses it. Long-press OK to switch to cursor / scroll mode.")
                 : L.t("「ユーザー補助」で「リモコンカーソル」をオンにすると、他のアプリもリモコンで操作できます。",
                         "Turn on \"Remote cursor\" in Accessibility to control other apps with the remote."));
         t.setTextColor(Color.rgb(160, 170, 190));

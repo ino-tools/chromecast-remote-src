@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">リモコンホーム</string>
-    <string name="cursor_desc">リモコンの上下左右・決定ボタンで、画面にカーソルを出して、タップやスクロールの代わりに操作します。リモコンのキーだけを読み、画面の内容は読みません。記録も通信もしません。</string>
+    <string name="cursor_desc">リモコンの上下左右・決定ボタンで、他のアプリをテレビのように操作します。画面にあるボタンの位置と、押せるか・スクロールできるかを調べて、選択の枠を出し、決定で押します。画面の文字や入力した内容は使わず、記録も通信もしません。</string>
     <string name="cursor_label">リモコンカーソル</string>
 </resources>
