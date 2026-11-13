@@ -11,6 +11,14 @@ Chromecast（Google TV）のリモコンで操作できる、Google TV 風のホ
 
 - リモコンの割り当て（2026.11.13.3〜）：上下左右・決定・モード切替のボタンを、リモコンのボタンを押して自由に割り当てる（ファイヤースティックなど）。初期値は十字キー、決定・ENTER・ゲームパッドのA/SELECT。
 
+- ソフトの更新（2026.11.13.4〜）：アプリ内で新しい版を確認 → ダウンロード → インストール確認画面。確認先はこのリポジトリの最新 Release（説明欄の versionCode / versionName を CI が書く）。1日1回、ホームを開いたときに自動確認してバナーで知らせる。
+- 改善要望：アプリ内のフォーム → Google フォーム（AppConfig.java の FORM_ID / FORM_ENTRY。空のあいだは「準備中」）。
+
+## 通信するもの
+- 新しい版の確認と APK の取得：api.github.com と github.com（このリポジトリの Release だけ）
+- 改善要望の送信：docs.google.com（フォーム）。送るのは書いた文章・アプリの版・端末の種類だけ。
+- それ以外は通信しない。AppConfig.java は自動反映タスクが変更しない。
+
 ## ビルド
 main に push すると GitHub Actions が assembleDebug を実行し、Release `build-N` に `app-debug.apk` が付く。
 署名鍵（app/fixed.keystore）は試作用で、リポジトリが公開のため共有している。配布版では別にする。

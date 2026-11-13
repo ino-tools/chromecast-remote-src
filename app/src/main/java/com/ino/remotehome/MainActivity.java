@@ -77,6 +77,20 @@ public class MainActivity extends Activity {
     protected void onResume() {
         super.onResume();
         build();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                final boolean found = Net.checkDaily(getApplicationContext());
+                if (found) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            build();
+                        }
+                    });
+                }
+            }
+        }).start();
     }
 
     private void build() {
@@ -90,6 +104,24 @@ public class MainActivity extends Activity {
         clock.setGravity(Gravity.END);
         clock.setPadding(0, 0, dp(32), dp(8));
         content.addView(clock);
+
+        if (Net.hasUpdate(this)) {
+            TextView ub = Ui.row(this, L.t("新しい版があります：", "Update available: ") + Net.latestName(this)
+                    + L.t("　→ 決定で更新", "  → press OK to update"));
+            ub.setTextColor(Color.rgb(255, 200, 61));
+            LinearLayout.LayoutParams ulp = new LinearLayout.LayoutParams(-2, -2);
+            ulp.bottomMargin = dp(10);
+            ulp.rightMargin = dp(32);
+            ub.setLayoutParams(ulp);
+            ub.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(new Intent(MainActivity.this, UpdateActivity.class));
+                }
+            });
+            content.addView(ub);
+            firstFocus = ub;
+        }
 
         PackageManager pm = getPackageManager();
         List<Item> all = loadLauncherApps(pm);
@@ -159,6 +191,23 @@ public class MainActivity extends Activity {
         }));
         addRow(cur, false);
         addHelp(en);
+
+        // このアプリ：更新・要望
+        addRowTitle(L.t("このアプリ", "This app"));
+        List<Item> me = new ArrayList<Item>();
+        me.add(Item.tool(L.t("ソフトの更新\n", "Update\n") + Net.versionName(this), new Runnable() {
+            @Override
+            public void run() {
+                startActivity(new Intent(MainActivity.this, UpdateActivity.class));
+            }
+        }));
+        me.add(Item.tool(L.t("改善要望を\n送る", "Send\nfeedback"), new Runnable() {
+            @Override
+            public void run() {
+                startActivity(new Intent(MainActivity.this, FeedbackActivity.class));
+            }
+        }));
+        addRow(me, false);
 
         // 3段目：すべてのアプリ
         addRowTitle(L.t("すべてのアプリ", "All apps"));

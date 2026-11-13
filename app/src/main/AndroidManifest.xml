@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+
     <uses-feature android:name="android.hardware.touchscreen" android:required="false" />
     <uses-feature android:name="android.hardware.bluetooth" android:required="false" />
 
@@ -34,6 +37,19 @@
 
         <activity
             android:name=".KeyMapActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".UpdateActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".FeedbackActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
+        <receiver
+            android:name=".InstallReceiver"
             android:exported="false" />
 
         <service

@@ -29,9 +29,18 @@ jobs:
           name: remote-home-debug
           path: app/build/outputs/apk/debug/app-debug.apk
 
+      - name: Read version
+        id: ver
+        run: |
+          echo "code=$(grep -oP 'versionCode = \K[0-9]+' app/build.gradle.kts)" >> "$GITHUB_OUTPUT"
+          echo "name=$(grep -oP 'versionName = "\K[^"]+' app/build.gradle.kts)" >> "$GITHUB_OUTPUT"
+
       - name: Publish release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: build-${{ github.run_number }}
           name: build-${{ github.run_number }}
+          body: |
+            versionCode=${{ steps.ver.outputs.code }}
+            versionName=${{ steps.ver.outputs.name }}
           files: app/build/outputs/apk/debug/app-debug.apk
