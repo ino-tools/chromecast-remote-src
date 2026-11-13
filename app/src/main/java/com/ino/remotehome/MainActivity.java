@@ -76,6 +76,9 @@ public class MainActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
+        if (!getSharedPreferences("p", MODE_PRIVATE).getBoolean("setup_seen", false) && !serviceEnabled()) {
+            startActivity(new Intent(this, SetupActivity.class));
+        }
         build();
         new Thread(new Runnable() {
             @Override
@@ -165,6 +168,12 @@ public class MainActivity extends Activity {
         List<Item> cur = new ArrayList<Item>();
         boolean on = Prefs.cursorOn(this);
         boolean en = serviceEnabled();
+        cur.add(Item.tool(L.t("かんたん\n設定", "Quick\nsetup"), new Runnable() {
+            @Override
+            public void run() {
+                startActivity(new Intent(MainActivity.this, SetupActivity.class));
+            }
+        }));
         cur.add(Item.tool(L.t("カーソル操作\n", "Cursor\n") + (on ? L.t("オン", "ON") : L.t("オフ", "OFF")),
                 new Runnable() {
                     @Override
