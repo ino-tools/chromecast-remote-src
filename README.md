@@ -1,0 +1,17 @@
+# リモコンホーム（試作）
+
+Chromecast（Google TV）のリモコンで操作できる、Google TV 風のホーム画面アプリ。
+オットキャスト P3（Android 12）の中で、同席者が動画アプリをリモコンで選んで開く用途。
+
+## いまの機能（試作 2026.11.13）
+- ホーム：動画アプリの行・道具の行・すべてのアプリの行。上下左右で選び、決定で起動。
+- リモコンのキー確認：どのボタンがどのキーとして届くかを表示（リモコン・キーボード・マウス）。
+
+## ビルド
+main に push すると GitHub Actions が assembleDebug を実行し、Release `build-N` に `app-debug.apk` が付く。
+署名鍵（app/fixed.keystore）は試作用で、リポジトリが公開のため共有している。配布版では別にする。
+
+## 守ること
+- Java 8（ラムダ禁止）、AndroidX なし。
+- 画面の文字は `L.t("日本語", "English")`。
+- 版番号：versionCode=YYYYMMDDNN / versionName=YYYY.MM.DD（同じ日の2回目は .2）。
