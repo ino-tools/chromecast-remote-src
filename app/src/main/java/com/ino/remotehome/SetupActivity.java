@@ -95,13 +95,23 @@ public class SetupActivity extends Activity {
         list.addView(text(names.isEmpty()
                 ? L.t("リモコンが見つかりません。", "No remote found.")
                 : L.t("見つかった機器：", "Found: ") + names, 14, names.isEmpty() ? Color.rgb(255, 200, 61) : Color.rgb(120, 220, 160)));
+        diagram(DiagramView.FLOW);
         list.addView(text(L.t(
-                "・Chromecast のリモコン：「戻る」と「ホーム」を同時に3秒ほど長押し（ランプが点滅したらペアリング待ち）。\n"
-                        + "・そのほかのリモコン：説明書のペアリング（接続待ち）の操作をする。\n"
-                        + "・下のボタンで Bluetooth の設定を開き、リモコンを選んで接続。",
-                "- Chromecast remote: hold Back + Home together for about 3 seconds (the light blinks when it is ready to pair).\n"
-                        + "- Other remotes: follow the pairing steps in the manual.\n"
-                        + "- Open Bluetooth settings below and choose the remote."), 13, Color.rgb(200, 210, 225)));
+                "手順：① リモコンをペアリング待ちにする（下の図）→ ② つなぐ側（P3・スマホ）で Bluetooth の設定を開く → ③ 一覧に出てきたリモコンを選ぶ。",
+                "Steps: 1) put the remote in pairing mode (see below), 2) open Bluetooth settings on the P3 / phone, 3) choose the remote in the list."),
+                13, Color.rgb(200, 210, 225)));
+        list.addView(text(L.t(
+                "⚠ リモコンは、ふだん使っているテレビ（Chromecast・Fire TV）につながっています。つなぐ前に、そのテレビの電源を切るか、リモコンをテレビから遠ざけてください。近くにあると、元のテレビにつながってしまいます。",
+                "Warning: the remote is normally connected to its own TV (Chromecast / Fire TV). Turn that TV off or move the remote away first, or it will reconnect to the TV."),
+                13, Color.rgb(255, 200, 61)));
+        diagram(DiagramView.PAIR_CC);
+        diagram(DiagramView.PAIR_FIRE);
+        list.addView(text(L.t(
+                "・そのほかの Bluetooth リモコン：説明書のペアリング（接続待ち）の操作をします。\n"
+                        + "・これらのリモコンは、本来は自分のテレビ用です。つなぐ相手（P3・スマホ）や機種によっては、Bluetooth の一覧に出てこないことがあります（メーカーが案内している使い方ではないため）。出てこないときは、Bluetooth の汎用リモコンや、マウス型のリモコンでも使えます（この設定では、ボタンの割り当てを変えられます）。",
+                "- Other Bluetooth remotes: follow the pairing steps in the manual.\n"
+                        + "- These remotes are meant for their own TVs. Depending on the device (P3 / phone) and model, they may not show up in the Bluetooth list (this is not an official use). If so, a generic Bluetooth remote or an air-mouse remote works too; you can change button assignments in this app."),
+                13, Color.rgb(200, 210, 225)));
         TextView bt = Ui.row(this, L.t("Bluetooth の設定を開く", "Open Bluetooth settings"));
         bt.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -152,6 +162,9 @@ public class SetupActivity extends Activity {
                         + "3) Turn it on and allow\n"
                         + "* If it says \"Restricted setting\", open App info below, tap the ⋮ menu, choose \"Allow restricted settings\", then try again."),
                 13, en ? Color.rgb(120, 220, 160) : Color.rgb(200, 210, 225)));
+        if (!en) {
+            diagram(DiagramView.A11Y);
+        }
         TextView ac = Ui.row(this, L.t("ユーザー補助の設定を開く", "Open Accessibility settings"));
         ac.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -194,6 +207,8 @@ public class SetupActivity extends Activity {
 
         // 5. 使い方
         header(5, L.t("使い方", "How to use"), false);
+        diagram(DiagramView.USE);
+        diagram(DiagramView.MODES);
         list.addView(text(L.t(
                 "・ホームで動画アプリを選んで決定。\n"
                         + "・アプリの中では、上下左右でボタンからボタンへ選択（水色の枠）が移り、決定で押します。端まで行くと自動でスクロール。\n"
@@ -217,6 +232,14 @@ public class SetupActivity extends Activity {
         list.addView(done);
 
         if (first != null) first.requestFocus();
+    }
+
+    private void diagram(int kind) {
+        DiagramView v = new DiagramView(this, kind);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(-1, -2);
+        lp.topMargin = Ui.dp(this, 6);
+        lp.bottomMargin = Ui.dp(this, 10);
+        list.addView(v, lp);
     }
 
     private void header(int n, String s, boolean ok) {
