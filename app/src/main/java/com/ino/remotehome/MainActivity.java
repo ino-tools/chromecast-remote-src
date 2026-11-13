@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.provider.Settings;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
@@ -127,6 +128,32 @@ public class MainActivity extends Activity {
         }));
         addRow(tools, false);
 
+        // 設定の行：カーソル操作
+        addRowTitle(L.t("リモコンカーソル", "Remote cursor"));
+        List<Item> cur = new ArrayList<Item>();
+        boolean on = Prefs.cursorOn(this);
+        boolean en = serviceEnabled();
+        cur.add(Item.tool(L.t("カーソル操作\n", "Cursor\n") + (on ? L.t("オン", "ON") : L.t("オフ", "OFF")),
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        Prefs.setCursorOn(MainActivity.this, !Prefs.cursorOn(MainActivity.this));
+                        build();
+                    }
+                }));
+        cur.add(Item.tool(L.t("ユーザー補助\n", "Accessibility\n") + (en ? L.t("有効", "enabled") : L.t("要設定", "set up")),
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            startActivity(new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS));
+                        } catch (Exception ignored) {
+                        }
+                    }
+                }));
+        addRow(cur, false);
+        addHelp(en);
+
         // 3段目：すべてのアプリ
         addRowTitle(L.t("すべてのアプリ", "All apps"));
         addRow(all, false);
@@ -134,6 +161,24 @@ public class MainActivity extends Activity {
         if (firstFocus != null) {
             firstFocus.requestFocus();
         }
+    }
+
+    private boolean serviceEnabled() {
+        String v = Settings.Secure.getString(getContentResolver(), Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES);
+        return v != null && v.contains(getPackageName() + "/");
+    }
+
+    private void addHelp(boolean enabled) {
+        TextView t = new TextView(this);
+        t.setText(enabled
+                ? L.t("他のアプリを開くと、リモコンの上下左右でカーソルが動きます。決定＝タップ、決定を長押し＝スクロールモードと切り替え。",
+                        "In other apps, the arrow keys move a cursor. OK = tap, long-press OK = switch to scroll mode.")
+                : L.t("「ユーザー補助」で「リモコンカーソル」をオンにすると、他のアプリもリモコンで操作できます。",
+                        "Turn on \"Remote cursor\" in Accessibility to control other apps with the remote."));
+        t.setTextColor(Color.rgb(160, 170, 190));
+        t.setTextSize(13);
+        t.setPadding(0, 0, dp(32), dp(8));
+        content.addView(t);
     }
 
     private List<Item> loadLauncherApps(PackageManager pm) {
