@@ -25,7 +25,8 @@ import android.view.accessibility.AccessibilityEvent;
  *  - 決定（短く）：カーソルの位置をタップ
  *  - 決定（長く）：カーソルモード ⇔ スクロールモード を切り替え
  *  - スクロールモード：上下左右でその方向へ画面をスクロール（指でなぞる動き）
- *  - 戻る・ホーム・音量などは触らず、そのまま通す
+ *  - 割り当てていないボタン（戻る・ホーム・音量など）は触らず、そのまま通す
+ *  - どのボタンを使うかは「リモコンの割り当て」で変えられる（ファイヤースティックなど）
  */
 public class CursorService extends AccessibilityService {
 
@@ -132,18 +133,25 @@ public class CursorService extends AccessibilityService {
         if (!active()) {
             return false;
         }
-        int k = e.getKeyCode();
-        boolean ok = k == KeyEvent.KEYCODE_DPAD_CENTER
-                || k == KeyEvent.KEYCODE_ENTER
-                || k == KeyEvent.KEYCODE_NUMPAD_ENTER;
-        boolean dir = k == KeyEvent.KEYCODE_DPAD_UP || k == KeyEvent.KEYCODE_DPAD_DOWN
-                || k == KeyEvent.KEYCODE_DPAD_LEFT || k == KeyEvent.KEYCODE_DPAD_RIGHT;
-        if (!ok && !dir) {
+        String fn = Prefs.funcOf(this, e.getKeyCode());
+        if (fn == null) {
             return false;
         }
         initPos();
 
-        if (dir) {
+        if (fn.equals("toggle")) {
+            if (e.getAction() == KeyEvent.ACTION_DOWN && e.getRepeatCount() == 0) {
+                scrollMode = !scrollMode;
+                show();
+            }
+            return true;
+        }
+
+        if (!fn.equals("ok")) {
+            int k = fn.equals("up") ? KeyEvent.KEYCODE_DPAD_UP
+                    : fn.equals("down") ? KeyEvent.KEYCODE_DPAD_DOWN
+                    : fn.equals("left") ? KeyEvent.KEYCODE_DPAD_LEFT
+                    : KeyEvent.KEYCODE_DPAD_RIGHT;
             if (e.getAction() == KeyEvent.ACTION_DOWN) {
                 onDirection(k, e.getRepeatCount());
             }

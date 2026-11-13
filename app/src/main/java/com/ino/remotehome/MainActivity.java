@@ -151,6 +151,12 @@ public class MainActivity extends Activity {
                         }
                     }
                 }));
+        cur.add(Item.tool(L.t("リモコンの\n割り当て", "Remote\nbuttons"), new Runnable() {
+            @Override
+            public void run() {
+                startActivity(new Intent(MainActivity.this, KeyMapActivity.class));
+            }
+        }));
         addRow(cur, false);
         addHelp(en);
 

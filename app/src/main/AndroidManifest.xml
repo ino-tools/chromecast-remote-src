@@ -32,6 +32,10 @@
             android:name=".KeyTestActivity"
             android:exported="false" />
 
+        <activity
+            android:name=".KeyMapActivity"
+            android:exported="false" />
+
         <service
             android:name=".CursorService"
             android:exported="false"
